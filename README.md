@@ -10,3 +10,6 @@
 
 5. git pull origin main
 6.  推送： git push origin main
+
+# 安装相关库(如果缺少或者新加的可以补充到requirements.txt中)
+pip install -r requirements.txt
