@@ -44,7 +44,7 @@ class ProcessingResult:
     data: Optional[Union[pd.DataFrame, List[Dict]]] = None
 
 class EnhancedIntentProcessor:
-    """增强的意图处理器，集成文档处理流水线"""
+    """增强的意图处理器，集成文档处理与意图识别功能"""
     
     def __init__(self, embedding_model: SentenceTransformer):
         self.llm = Ollama(model="llama3.1", request_timeout=30.0)

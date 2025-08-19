@@ -1,0 +1,12 @@
+2025-08-19 22:41:10,366 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-19 22:41:10,567 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-19 22:41:10,568 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-19 22:41:10,570 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-19 22:41:10,966 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-19 22:41:10,986 - ChromaVectorStore - INFO - 创建新集合: document_chunks
+2025-08-19 22:41:10,987 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-19 22:41:10,987 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-19 22:41:10,994 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-19 22:41:10,995 - TextEmbedder - INFO - 开始向量化 1 个文本
+2025-08-19 22:41:11,336 - TextEmbedder - INFO - 向量化完成，缓存命中: 0, 新生成: 1
+2025-08-19 22:41:11,355 - ChromaVectorStore - INFO - 搜索完成，返回 0 个结果
