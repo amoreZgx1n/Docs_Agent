@@ -1,0 +1,110 @@
+# 数据分析Agent配置文件
+
+# 文档处理配置
+document_processing:
+  # PDF处理配置
+  pdf:
+    max_file_size_mb: 10
+    supported_formats: [".pdf"]
+    markdown_conversion:
+      preserve_formatting: true
+      extract_images: false  # 暂时关闭图片提取
+  
+  # 表格处理配置
+  table:
+    supported_formats: [".csv", ".xlsx", ".xls"]
+    max_file_size_mb: 10
+    encoding: "utf-8"
+    pandas_options:
+      engine: "openpyxl"  # 用于Excel文件
+
+# 文本处理配置
+text_processing:
+  # 文本分块配置
+  chunking:
+    chunk_size: 300
+    chunk_overlap: 30
+    separator: "\n\n"
+    chunk_overlap_ratio: 0.1
+  
+  # 向量化配置
+  embedding:
+    model_name: "moka-ai/m3e-base"
+    max_length: 512
+    embed_batch_size: 32
+    device: "cpu"  # 可选: "cuda" 如果有GPU
+    normalize: true
+    # SiliconFlow API配置
+    api:
+      url: "https://api.siliconflow.cn/v1/embeddings"
+      model: "netease-youdao/bce-embedding-base_v1"
+      max_tokens: 512
+      timeout: 30
+      retries: 3
+      batch_size: 10
+    cache:
+      enabled: true
+      path: "./data/embedding_cache"
+      expire_days: 30
+      format: "pickle"
+    mock:
+      enabled: false
+      dimension: 768
+
+# 存储配置
+storage:
+  # 向量数据库配置
+  vector_db:
+    type: "chroma"
+    persist_directory: "./chroma_db"
+    collection_name: "document_chunks"
+    distance_metric: "cosine"
+    embedding_function: "default"
+    metadata_hnsw_space: "cosine"
+    allow_reset: true
+    anonymized_telemetry: false
+  
+  # 元数据存储配置
+  metadata:
+    storage_path: "./data/metadata"
+    format: "json"
+  
+  # 处理后的文档存储
+  processed_docs:
+    storage_path: "./data/processed"
+    format: "markdown"
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "./logs/agent.log"
+  max_file_size_mb: 10
+  backup_count: 5
+
+# 性能配置
+performance:
+  # 异步处理配置
+  async:
+    max_concurrent_tasks: 3
+    timeout_seconds: 300
+  
+  # 内存配置
+  memory:
+    max_memory_usage_mb: 6000  # 8GB环境下的安全值
+    cleanup_threshold: 0.8
+
+# 错误处理配置
+error_handling:
+  max_retries: 3
+  retry_delay_seconds: 5
+  log_errors: true
+  save_failed_docs: true
+
+# 路径配置
+paths:
+  documents: "./data/documents"
+  processed: "./data/processed"
+  vectors: "./data/vectors"
+  metadata: "./data/metadata"
+  logs: "./logs" 

@@ -1,0 +1,43 @@
+# 核心框架
+llama-index>=0.9.0
+chromadb>=0.4.0
+chroma-hnswlib>=0.7.0
+
+# 文本分块相关
+langchain>=0.1.0
+langchain-text-splitters>=0.1.0
+
+# 文档处理
+PyMuPDF>=1.23.0
+markdown-it-py>=3.0.0
+markitdown>=0.1.0
+pandas>=2.0.0
+openpyxl>=3.1.0
+xlrd>=2.0.0
+
+# 文本处理和向量化
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+torch>=2.0.0
+
+# 异步处理
+asyncio
+aiofiles>=23.0.0
+
+# 配置和日志
+pyyaml>=6.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# 工具库
+tqdm>=4.65.0
+pathlib
+typing-extensions>=4.5.0
+
+# 测试
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+
+# 开发工具
+black>=23.0.0
+flake8>=6.0.0 
