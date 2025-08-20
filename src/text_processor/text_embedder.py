@@ -99,10 +99,11 @@ class EmbeddingCache:
         }
 
 
-class SiliconFlowEmbedder:
+class SiliconFlowEmbedder(LoggerMixin):
     """SiliconFlow API向量化器"""
     
     def __init__(self, api_key: str, config: Any):
+        super().__init__()
         self.api_key = api_key
         self.config = config
         self.session = requests.Session()
@@ -136,10 +137,15 @@ class SiliconFlowEmbedder:
         if not texts:
             return []
         
-        # 检查文本长度限制
+        # 检查文本长度限制（使用字符长度作为近似，因为token数量计算复杂）
         for i, text in enumerate(texts):
-            if len(text) > self.config.text_processing.embedding_api.max_tokens:
-                raise ValueError(f"文本 {i} 超过最大长度限制 {self.config.text_processing.embedding_api.max_tokens}")
+            # 对于中文文本，一个字符大约对应1-2个token，我们使用保守的估计
+            estimated_tokens = len(text) * 1.5  # 保守估计
+            if estimated_tokens > self.config.text_processing.embedding_api.max_tokens:
+                # 如果超过限制，截断文本
+                max_chars = int(self.config.text_processing.embedding_api.max_tokens / 1.5)
+                texts[i] = text[:max_chars]
+                self.logger.warning(f"文本 {i} 超过长度限制，已截断到 {max_chars} 字符")
         
         # 分批处理
         batch_size = self.config.text_processing.embedding_api.batch_size

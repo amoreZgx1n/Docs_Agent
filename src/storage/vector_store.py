@@ -197,16 +197,28 @@ class ChromaVectorStore(LoggerMixin):
             return []
         
         try:
-            # 批量添加到Chroma
-            self.collection.add(
-                ids=[doc['id'] for doc in valid_docs],
-                embeddings=[doc['embedding'] for doc in valid_docs],
-                documents=[doc['text'] for doc in valid_docs],
-                metadatas=[doc['metadata'] for doc in valid_docs]
-            )
+            # 分批处理，避免ChromaDB批处理大小限制
+            batch_size = 1000  # ChromaDB推荐的批处理大小
+            all_ids = []
             
-            self.logger.info(f"成功添加 {len(valid_docs)} 个文档")
-            return doc_ids
+            for i in range(0, len(valid_docs), batch_size):
+                batch_end = min(i + batch_size, len(valid_docs))
+                batch_docs = valid_docs[i:batch_end]
+                
+                self.logger.info(f"处理批次 {i//batch_size + 1}/{(len(valid_docs) + batch_size - 1)//batch_size}: {len(batch_docs)} 个文档")
+                
+                # 批量添加到Chroma
+                self.collection.add(
+                    ids=[doc['id'] for doc in batch_docs],
+                    embeddings=[doc['embedding'] for doc in batch_docs],
+                    documents=[doc['text'] for doc in batch_docs],
+                    metadatas=[doc['metadata'] for doc in batch_docs]
+                )
+                
+                all_ids.extend([doc['id'] for doc in batch_docs])
+            
+            self.logger.info(f"成功添加 {len(all_ids)} 个文档")
+            return all_ids
             
         except Exception as e:
             self.logger.error(f"添加文档到Chroma失败: {e}")

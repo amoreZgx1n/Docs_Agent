@@ -4,7 +4,7 @@
 document_processing:
   # PDF处理配置
   pdf:
-    max_file_size_mb: 10
+    max_file_size_mb: 100
     supported_formats: [".pdf"]
     markdown_conversion:
       preserve_formatting: true
@@ -13,7 +13,7 @@ document_processing:
   # 表格处理配置
   table:
     supported_formats: [".csv", ".xlsx", ".xls"]
-    max_file_size_mb: 10
+    max_file_size_mb: 100
     encoding: "utf-8"
     pandas_options:
       engine: "openpyxl"  # 用于Excel文件
@@ -22,8 +22,8 @@ document_processing:
 text_processing:
   # 文本分块配置
   chunking:
-    chunk_size: 300
-    chunk_overlap: 30
+    chunk_size: 200
+    chunk_overlap: 20
     separator: "\n\n"
     chunk_overlap_ratio: 0.1
   
