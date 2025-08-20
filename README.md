@@ -62,6 +62,9 @@ pip install -r requirements.txt
 创建 `.env` 文件：
 ```env
 SILICONFLOW_API_KEY=your_api_key_here
+ZHIPU_API_KEY =
+ZHIPU_BASE_URL =
+ZHIPU_MODEL =
 ```
 
 ### 4. 配置Ollama（可选）
@@ -69,7 +72,7 @@ SILICONFLOW_API_KEY=your_api_key_here
 ```bash
 # 安装Ollama
 # 下载模型
-ollama pull llama3.1
+ollama pull qwen3:8b
 ```
 
 ***
