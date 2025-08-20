@@ -21,6 +21,12 @@ from src.utils.logger import setup_logger
 from src.pipeline.document_pipeline import DocumentPipeline
 from src.utils.config import get_config
 
+from src.llm_generate.data_analyze2 import analyze_data
+from src.llm_generate.doc_qa import doc_qa
+
+os.environ["http_proxy"] = "http://127.0.0.1:7890"
+os.environ["https_proxy"] = "http://127.0.0.1:7890"
+os.environ['SILICONFLOW_API_KEY'] = 'sk-ealsjxzyweovkgxqlshbuophkshxjwaiawrldqnvlhzhsatd'
 @dataclass
 class AnalysisResult:
     """数据分析结果"""
@@ -47,7 +53,7 @@ class EnhancedIntentProcessor:
     """增强的意图处理器，集成文档处理与意图识别功能"""
     
     def __init__(self, embedding_model: SentenceTransformer):
-        self.llm = Ollama(model="llama3.1", request_timeout=30.0)
+        self.llm = Ollama(model="qwen3:8b", request_timeout=30.0)
         self.embedding_model = embedding_model
         
         # 初始化日志和配置
@@ -93,15 +99,25 @@ class EnhancedIntentProcessor:
         
         # 如果有向量化数据，进行文档问答
         if data is not None and 'vector' in data.columns and 'text_chunk' in data.columns:
-            return self._find_best_match(query, data)
+            best = self._find_best_match(query, data)
+            def to_snippets(x: Union[DocQnAResult, List[DocQnAResult]]) -> List[Dict[str, str]]:
+                if isinstance(x, list):
+                    return [{"source": i.source, "text": i.context} for i in x]
+                else:
+                    return [{"source": x.source, "text": x.context}]
+            snippets = to_snippets(best)
+            
+            doc_qa_result = doc_qa(query, snippets)
+            return doc_qa_result
         
         # 如果有表格数据，进行数据分析
         elif data is not None:
-            return AnalysisResult(
-                data=data,
-                query=query,
-                source="provided_data"
-            )
+            # return AnalysisResult(
+            #     data=data,
+            #     query=query,
+            #     source="provided_data"
+            # )
+            return analyze_data(query, data)
         
         # 默认返回处理结果
         return ProcessingResult(
@@ -224,45 +240,33 @@ async def main():
     print("模型加载完毕。")
     
     processor = EnhancedIntentProcessor(embedding_model=embedding_model)
+    vector_kb_df = create_vectorized_kb(embedding_model)
 
     print("\n\n----------- 1. 文档问答任务测试 -----------")
-    vector_kb_df = create_vectorized_kb(embedding_model)
-    print("\n[输入知识库]")
-    print(vector_kb_df[['text_chunk', 'source']])
-    print("-------------------------------------------")
-
     query_doc = "AI的关键是什么？"
+    
     doc_qa_result = await processor.process_query(query_doc, vector_kb_df)
+    # doc_qa_result = await processor.process_query(query=query_doc, file_path='./data/documents/深度学习（花书）.pdf')
     
     print("\n[输出结果]")
-    print(f"处理结果类型: {type(doc_qa_result)}")
-    if isinstance(doc_qa_result, DocQnAResult):
-        print(f"原始问题: {doc_qa_result.query}")
-        print(f"匹配到的上下文: {doc_qa_result.context}")
-        print(f"来源: {doc_qa_result.source}")
-        print(f"详细元数据: {doc_qa_result.metadata}")
+    print(doc_qa_result)
+    # print(f"处理结果类型: {type(doc_qa_result)}")
+    # if isinstance(doc_qa_result, DocQnAResult):
+    #     print(f"原始问题: {doc_qa_result.query}")
+    #     print(f"匹配到的上下文: {doc_qa_result.context}")
+    #     print(f"来源: {doc_qa_result.source}")
+    #     print(f"详细元数据: {doc_qa_result.metadata}")
 
     print("\n\n----------- 2. 数据分析任务测试 -----------")
     
-    df_sales = pd.DataFrame({
-        "产品ID": ["A101", "A102", "B201"],
-        "日期": pd.to_datetime(["2025-08-18", "2025-08-18", "2025-08-19"]),
-        "销售额": [150.0, 200.5, 75.0]
-    })
-    
-    print("\n[输入数据]")
-    print(df_sales)
+    df_sales = pd.read_csv("./data/tables/order_details.csv")
+    print("\n[输入数据示例]")
+    print(df_sales.head(10))
     print("-------------------------------------------")
-    
-    query_analysis = "8月18日哪款产品销量最高？"
+    query_analysis = "不同种类商品的售卖数量、售卖总额、利润以及利润占比？"
     analysis_result = await processor.process_query(query_analysis, df_sales)
-    
     print(f"\n[输出结果]")
-    print(f"处理结果类型: {type(analysis_result)}")
-    if isinstance(analysis_result, AnalysisResult):
-        print(f"原始问题: {analysis_result.query}")
-        print(f"数据：{analysis_result.data}")
-        print(f"来源: {analysis_result.source}")
+    print(analysis_result)
 
     print("\n\n----------- 3. 文档处理功能测试 -----------")
     print("💡 提示：你可以使用以下命令测试文档处理功能：")
