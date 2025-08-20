@@ -19,7 +19,9 @@ from llama_index.llms.ollama import Ollama
 import json
 from pydantic import create_model
 
-
+os.environ["ZHIPU_API_KEY"] = ""
+os.environ["ZHIPU_BASE_URL"]= ""
+os.environ["ZHIPU_MODEL"] =  ""
 # ─────────────────────────────────────────────────────────────────────────────
 # 小型类型与协议
 # ─────────────────────────────────────────────────────────────────────────────
