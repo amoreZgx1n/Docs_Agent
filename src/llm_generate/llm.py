@@ -80,11 +80,11 @@ class _LLMFactory:
             )
         elif backend == "zhipu":
             # 独立的环境变量，避免误用 OPENAI_API_KEY
-            api_key = api_key or os.getenv("ZHIPU_API_KEY", "87da00501aaf448aa0f127bd59afc7b7.G9Xfrba1vEIB7BLH")
+            api_key = api_key or os.getenv("ZHIPU_API_KEY")
             if not api_key:
                 raise ValueError("ZHIPU_API_KEY 未设置")
-            base_url = base_url or os.getenv("ZHIPU_BASE_URL", "https://open.bigmodel.cn/api/paas/v4/chat/completions")
-            model = model or os.getenv("ZHIPU_MODEL", "glm-4.5")
+            base_url = base_url or os.getenv("ZHIPU_BASE_URL")
+            model = model or os.getenv("ZHIPU_MODEL")
 
             return ZhipuAI(
                 model=model,
