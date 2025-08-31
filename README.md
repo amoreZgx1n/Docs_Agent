@@ -16,8 +16,9 @@
 - **PDF文档处理**: 支持PDF转Markdown，文档清洗和分块
 - **表格数据处理**: 支持CSV/XLSX文件读取和DataFrame转换
 - **文本分块**: 智能文本切分，支持多种分块策略
-- **向量化**: 使用SiliconFlow API进行文本向量化
+- **向量化**: 使用SiliconFlow API进行文本向量化，支持批量处理
 - **向量存储**: 基于ChromaDB的向量数据库存储
+- **DuckDB集成**: 表格数据SQL化存储和查询
 
 ### 🧠 意图识别模块（查询理解与路由）
 - **意图识别**: 智能识别用户查询意图
@@ -29,19 +30,21 @@
 - **代码生成**: 自动生成Python代码
 - **代码执行**: 安全的Python沙箱执行环境
 - **图表生成**: 自动生成数据可视化图表
-- **报告生成**: 智能生成分析报告   
+- **报告生成**: 智能生成分析报告
+- **SQL生成**: 智能SQL语句生成和优化   
 
 ***
 
 ## 🚩完成进度：
-- [ ] 文档处理、清洗、向量化、向量存储、检索
-- [ ] 数据分析 or 文档问答 路由
-- [ ] LLM代码生成，数据探索，数据分析
-- [ ] 单轮对话
-- [ ] 意图识别
-- [ ] 长短期记忆管理，多轮对话
-- [ ] 长表格处理、分析, SQL生成
-- [ ] 分析图表生成，数据可视化
+- [x] 文档处理、清洗、向量化、向量存储、检索
+- [x] 数据分析 or 文档问答 路由
+- [x] LLM代码生成，数据探索，数据分析
+- [x] 单轮对话
+- [x] 意图识别
+- [x] 长短期记忆管理，多轮对话
+- [x] 长表格处理、分析, SQL生成
+- [x] 分析图表生成，数据可视化
+- [x] DuckDB数据库集成，智能SQL生成
 
 ***
 
@@ -98,6 +101,10 @@ async def main():
     
     # 搜索文档
     results = await processor.search_documents("关键词", top_k=5)
+    
+    # 生成并执行SQL查询
+    sql_result = await processor.generate_sql_from_query("查找金额最高的订单", "table_name")
+    execution_result = await processor.execute_generated_sql("查找金额最高的订单", "table_name")
 
 asyncio.run(main())
 ```
