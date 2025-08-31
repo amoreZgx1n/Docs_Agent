@@ -64,6 +64,13 @@ storage:
     allow_reset: true
     anonymized_telemetry: false
   
+  # DuckDB数据库配置
+  duckdb:
+    db_path: "./data/duckdb/tables.db"
+    max_memory_gb: 4
+    enable_progress_bar: true
+    auto_optimize: true
+  
   # 元数据存储配置
   metadata:
     storage_path: "./data/metadata"

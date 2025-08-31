@@ -90,6 +90,15 @@ class TextProcessingConfig:
 
 
 @dataclass
+class DuckDBConfig:
+    """DuckDB配置"""
+    db_path: str = "./data/duckdb/tables.db"
+    max_memory_gb: int = 4
+    enable_progress_bar: bool = True
+    auto_optimize: bool = True
+
+
+@dataclass
 class StorageConfig:
     """存储配置"""
     vector_db_type: str = "chroma"
@@ -100,10 +109,15 @@ class StorageConfig:
     vector_db_metadata_hnsw_space: str = "cosine"
     vector_db_allow_reset: bool = True
     vector_db_anonymized_telemetry: bool = False
+    duckdb: DuckDBConfig = None
     metadata_storage_path: str = "./data/metadata"
     metadata_format: str = "json"
     processed_docs_storage_path: str = "./data/processed"
     processed_docs_format: str = "markdown"
+
+    def __post_init__(self):
+        if self.duckdb is None:
+            self.duckdb = DuckDBConfig()
 
 
 @dataclass
@@ -235,6 +249,7 @@ class Config:
         # 存储配置
         storage_config = self._config_data.get('storage', {})
         vector_config = storage_config.get('vector_db', {})
+        duckdb_config = storage_config.get('duckdb', {})
         metadata_config = storage_config.get('metadata', {})
         processed_config = storage_config.get('processed_docs', {})
         
@@ -247,6 +262,12 @@ class Config:
             vector_db_metadata_hnsw_space=vector_config.get('metadata_hnsw_space', "cosine"),
             vector_db_allow_reset=vector_config.get('allow_reset', True),
             vector_db_anonymized_telemetry=vector_config.get('anonymized_telemetry', False),
+            duckdb=DuckDBConfig(
+                db_path=duckdb_config.get('db_path', "./data/duckdb/tables.db"),
+                max_memory_gb=duckdb_config.get('max_memory_gb', 4),
+                enable_progress_bar=duckdb_config.get('enable_progress_bar', True),
+                auto_optimize=duckdb_config.get('auto_optimize', True)
+            ),
             metadata_storage_path=metadata_config.get('storage_path', "./data/metadata"),
             metadata_format=metadata_config.get('format', "json"),
             processed_docs_storage_path=processed_config.get('storage_path', "./data/processed"),

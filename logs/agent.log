@@ -92097,3 +92097,244 @@ TypeError: expected string or bytes-like object, got 'DocumentConverterResult'
 2025-08-31 20:53:39,671 - TextEmbedder - INFO - 向量化完成，缓存命中: 3, 新生成: 0
 2025-08-31 20:53:39,672 - TextEmbedder - INFO - 开始向量化 3 个文本
 2025-08-31 20:53:39,673 - TextEmbedder - INFO - 向量化完成，缓存命中: 3, 新生成: 0
+2025-08-31 21:12:03,907 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:12:04,067 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:12:04,068 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:12:04,070 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:12:04,160 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:12:04,162 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:12:04,162 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:12:44,064 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:12:44,258 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:12:44,258 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:12:44,260 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:12:44,354 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:12:44,355 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:12:44,356 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:12:44,374 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:12:44,379 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:12:44,380 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-31 21:12:44,381 - DocumentPipeline - INFO - 开始处理文档: data\tables\order_details.csv
+2025-08-31 21:12:44,383 - DocumentPipeline - INFO - 开始加载表格: data\tables\order_details.csv
+2025-08-31 21:12:44,383 - TableProcessor - INFO - 开始加载表格文件: data\tables\order_details.csv
+2025-08-31 21:12:44,384 - TableProcessor - INFO - 加载CSV文件: data\tables\order_details.csv
+2025-08-31 21:12:44,390 - TableProcessor - INFO - CSV文件加载成功，使用编码: utf-8
+2025-08-31 21:12:44,390 - TableProcessor - INFO - 开始后处理DataFrame，原始形状: (1500, 6)
+2025-08-31 21:12:44,399 - TableProcessor - INFO - DataFrame后处理完成，最终形状: (1500, 6)
+2025-08-31 21:12:44,399 - DocumentPipeline - INFO - 导入表格数据到DuckDB
+2025-08-31 21:12:44,423 - DuckDBManager - ERROR - 导入表格数据失败: Object of type ObjectDType is not JSON serializable
+2025-08-31 21:12:44,423 - DocumentPipeline - ERROR - 处理文档失败: 表格处理失败: Object of type ObjectDType is not JSON serializable
+Traceback (most recent call last):
+  File "D:\桌面\docs_agent_new\Docs_Agent-main\src\pipeline\document_pipeline.py", line 196, in _process_table
+    table_name = self.duckdb_manager.import_table(df, str(file_path))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\桌面\docs_agent_new\Docs_Agent-main\src\storage\duckdb_manager.py", line 179, in import_table
+    json.dumps(schema_info, ensure_ascii=False),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python3.11.3\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "D:\python3.11.3\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python3.11.3\Lib\json\encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "D:\python3.11.3\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type ObjectDType is not JSON serializable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\桌面\docs_agent_new\Docs_Agent-main\src\pipeline\document_pipeline.py", line 92, in process_document
+    return self._process_table(file_path, base_metadata, start_time)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\桌面\docs_agent_new\Docs_Agent-main\src\pipeline\document_pipeline.py", line 279, in _process_table
+    raise Exception(f"表格处理失败: {str(e)}")
+Exception: 表格处理失败: Object of type ObjectDType is not JSON serializable
+2025-08-31 21:12:44,454 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:12:44,455 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:12:44,473 - DuckDBManager - ERROR - 计算文件哈希失败: [Errno 2] No such file or directory: 'test_file.csv'
+2025-08-31 21:12:44,475 - DuckDBManager - ERROR - 导入表格数据失败: Object of type Int64DType is not JSON serializable
+2025-08-31 21:12:58,957 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:12:59,096 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:12:59,097 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:12:59,098 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:12:59,177 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:12:59,178 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:12:59,178 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:12:59,191 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:12:59,193 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:12:59,193 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-31 21:12:59,194 - DocumentPipeline - INFO - 开始处理文档: data\tables\order_details.csv
+2025-08-31 21:12:59,196 - DocumentPipeline - INFO - 开始加载表格: data\tables\order_details.csv
+2025-08-31 21:12:59,196 - TableProcessor - INFO - 开始加载表格文件: data\tables\order_details.csv
+2025-08-31 21:12:59,197 - TableProcessor - INFO - 加载CSV文件: data\tables\order_details.csv
+2025-08-31 21:12:59,201 - TableProcessor - INFO - CSV文件加载成功，使用编码: utf-8
+2025-08-31 21:12:59,201 - TableProcessor - INFO - 开始后处理DataFrame，原始形状: (1500, 6)
+2025-08-31 21:12:59,208 - TableProcessor - INFO - DataFrame后处理完成，最终形状: (1500, 6)
+2025-08-31 21:12:59,208 - DocumentPipeline - INFO - 导入表格数据到DuckDB
+2025-08-31 21:12:59,221 - DuckDBManager - WARNING - 表 order_details 已存在，将删除重建
+2025-08-31 21:12:59,227 - DuckDBManager - INFO - 表 order_details 删除成功
+2025-08-31 21:12:59,236 - DuckDBManager - INFO - 表格数据导入成功: order_details (1500 行, 6 列)
+2025-08-31 21:12:59,236 - DocumentPipeline - INFO - 表格已导入DuckDB，表名: order_details
+2025-08-31 21:12:59,237 - DocumentPipeline - INFO - 将表格转换为文本描述
+2025-08-31 21:12:59,240 - TextChunker - INFO - 开始文本分块，方法: basic，文本长度: 372
+2025-08-31 21:12:59,241 - TextChunker - INFO - 基础分块完成，生成 2 个块
+2025-08-31 21:12:59,241 - DocumentPipeline - INFO - 开始批量向量化 2 个文本块
+2025-08-31 21:12:59,242 - TextEmbedder - INFO - 开始向量化 2 个文本
+2025-08-31 21:12:59,571 - TextEmbedder - INFO - 向量化完成，缓存命中: 0, 新生成: 2
+2025-08-31 21:12:59,572 - DocumentPipeline - INFO - 存储 2 个文档到向量数据库
+2025-08-31 21:12:59,572 - ChromaVectorStore - INFO - 开始添加 2 个文档
+2025-08-31 21:13:00,870 - ChromaVectorStore - INFO - 处理批次 1/1: 2 个文档
+2025-08-31 21:13:00,956 - ChromaVectorStore - INFO - 成功添加 2 个文档
+2025-08-31 21:13:00,956 - DocumentPipeline - INFO - 表格处理完成，耗时: 1.76秒
+2025-08-31 21:13:00,969 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:13:00,971 - DuckDBManager - ERROR - SQL查询执行失败: Binder Error: STAR expression is only allowed as the root element of an expression. Use COLUMNS(*) instead.
+2025-08-31 21:13:00,972 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:13:01,008 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:13:01,009 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:13:01,024 - DuckDBManager - WARNING - 表 test_file 已存在，将删除重建
+2025-08-31 21:13:01,028 - DuckDBManager - INFO - 表 test_file 删除成功
+2025-08-31 21:13:01,031 - DuckDBManager - ERROR - 计算文件哈希失败: [Errno 2] No such file or directory: 'test_file.csv'
+2025-08-31 21:13:01,036 - DuckDBManager - INFO - 表格数据导入成功: test_file (5 行, 4 列)
+2025-08-31 21:13:01,041 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:13:01,055 - DuckDBManager - INFO - DuckDB连接已关闭
+2025-08-31 21:15:20,166 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:15:20,324 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:15:20,325 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:15:20,326 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:15:20,401 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:15:20,402 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:15:20,403 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:15:20,417 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:15:20,419 - DuckDBManager - ERROR - 创建系统表失败: Parser Error: syntax error at or near "AUTOINCREMENT"
+2025-08-31 21:15:20,419 - DuckDBManager - ERROR - DuckDB数据库初始化失败: Parser Error: syntax error at or near "AUTOINCREMENT"
+2025-08-31 21:15:35,296 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:15:35,447 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:15:35,448 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:15:35,449 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:15:35,532 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:15:35,533 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:15:35,534 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:15:35,548 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:15:35,550 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:15:35,551 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-31 21:15:35,552 - DocumentPipeline - INFO - 开始处理文档: data\tables\order_details.csv
+2025-08-31 21:15:35,553 - DocumentPipeline - INFO - 开始加载表格: data\tables\order_details.csv
+2025-08-31 21:15:35,554 - TableProcessor - INFO - 开始加载表格文件: data\tables\order_details.csv
+2025-08-31 21:15:35,554 - TableProcessor - INFO - 加载CSV文件: data\tables\order_details.csv
+2025-08-31 21:15:35,559 - TableProcessor - INFO - CSV文件加载成功，使用编码: utf-8
+2025-08-31 21:15:35,560 - TableProcessor - INFO - 开始后处理DataFrame，原始形状: (1500, 6)
+2025-08-31 21:15:35,566 - TableProcessor - INFO - DataFrame后处理完成，最终形状: (1500, 6)
+2025-08-31 21:15:35,566 - DocumentPipeline - INFO - 导入表格数据到DuckDB
+2025-08-31 21:15:35,579 - DuckDBManager - WARNING - 表 order_details 已存在，将删除重建
+2025-08-31 21:15:35,586 - DuckDBManager - INFO - 表 order_details 删除成功
+2025-08-31 21:15:35,596 - DuckDBManager - INFO - 表格数据导入成功: order_details (1500 行, 6 列)
+2025-08-31 21:15:35,597 - DocumentPipeline - INFO - 表格已导入DuckDB，表名: order_details
+2025-08-31 21:15:35,597 - DocumentPipeline - INFO - 将表格转换为文本描述
+2025-08-31 21:15:35,601 - TextChunker - INFO - 开始文本分块，方法: basic，文本长度: 372
+2025-08-31 21:15:35,601 - TextChunker - INFO - 基础分块完成，生成 2 个块
+2025-08-31 21:15:35,602 - DocumentPipeline - INFO - 开始批量向量化 2 个文本块
+2025-08-31 21:15:35,602 - TextEmbedder - INFO - 开始向量化 2 个文本
+2025-08-31 21:15:35,603 - TextEmbedder - INFO - 向量化完成，缓存命中: 2, 新生成: 0
+2025-08-31 21:15:35,604 - DocumentPipeline - INFO - 存储 2 个文档到向量数据库
+2025-08-31 21:15:35,604 - ChromaVectorStore - INFO - 开始添加 2 个文档
+2025-08-31 21:15:36,845 - ChromaVectorStore - INFO - 处理批次 1/1: 2 个文档
+2025-08-31 21:15:36,935 - ChromaVectorStore - INFO - 成功添加 2 个文档
+2025-08-31 21:15:36,936 - DocumentPipeline - INFO - 表格处理完成，耗时: 1.38秒
+2025-08-31 21:15:41,039 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:15:45,121 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:15:49,203 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:15:53,302 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:15:57,392 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:16:01,461 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:16:05,549 - SQLGenerator - ERROR - SQL优化失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:16:09,630 - SQLGenerator - ERROR - SQL解释失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:16:13,745 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:16:58,489 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:16:58,640 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:16:58,641 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:16:58,642 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:16:58,719 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:16:58,720 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:16:58,721 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:16:58,734 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:16:58,736 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:16:58,737 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-31 21:16:58,737 - DocumentPipeline - INFO - 开始处理文档: data\tables\order_details.csv
+2025-08-31 21:16:58,739 - DocumentPipeline - INFO - 开始加载表格: data\tables\order_details.csv
+2025-08-31 21:16:58,739 - TableProcessor - INFO - 开始加载表格文件: data\tables\order_details.csv
+2025-08-31 21:16:58,740 - TableProcessor - INFO - 加载CSV文件: data\tables\order_details.csv
+2025-08-31 21:16:58,745 - TableProcessor - INFO - CSV文件加载成功，使用编码: utf-8
+2025-08-31 21:16:58,746 - TableProcessor - INFO - 开始后处理DataFrame，原始形状: (1500, 6)
+2025-08-31 21:16:58,752 - TableProcessor - INFO - DataFrame后处理完成，最终形状: (1500, 6)
+2025-08-31 21:16:58,752 - DocumentPipeline - INFO - 导入表格数据到DuckDB
+2025-08-31 21:16:58,766 - DuckDBManager - WARNING - 表 order_details 已存在，将删除重建
+2025-08-31 21:16:58,775 - DuckDBManager - INFO - 表 order_details 删除成功
+2025-08-31 21:16:58,785 - DuckDBManager - INFO - 表格数据导入成功: order_details (1500 行, 6 列)
+2025-08-31 21:16:58,785 - DocumentPipeline - INFO - 表格已导入DuckDB，表名: order_details
+2025-08-31 21:16:58,786 - DocumentPipeline - INFO - 将表格转换为文本描述
+2025-08-31 21:16:58,789 - TextChunker - INFO - 开始文本分块，方法: basic，文本长度: 372
+2025-08-31 21:16:58,790 - TextChunker - INFO - 基础分块完成，生成 2 个块
+2025-08-31 21:16:58,790 - DocumentPipeline - INFO - 开始批量向量化 2 个文本块
+2025-08-31 21:16:58,791 - TextEmbedder - INFO - 开始向量化 2 个文本
+2025-08-31 21:16:58,792 - TextEmbedder - INFO - 向量化完成，缓存命中: 2, 新生成: 0
+2025-08-31 21:16:58,792 - DocumentPipeline - INFO - 存储 2 个文档到向量数据库
+2025-08-31 21:16:58,792 - ChromaVectorStore - INFO - 开始添加 2 个文档
+2025-08-31 21:17:00,007 - ChromaVectorStore - INFO - 处理批次 1/1: 2 个文档
+2025-08-31 21:17:00,100 - ChromaVectorStore - INFO - 成功添加 2 个文档
+2025-08-31 21:17:00,100 - DocumentPipeline - INFO - 表格处理完成，耗时: 1.36秒
+2025-08-31 21:17:04,210 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:08,302 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:12,380 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:16,454 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:20,533 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:24,611 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:28,692 - SQLGenerator - ERROR - SQL优化失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:32,771 - SQLGenerator - ERROR - SQL解释失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:36,886 - SQLGenerator - ERROR - SQL生成失败: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-08-31 21:17:51,543 - EnhancedPDFProcessor - INFO - MarkItDown库初始化成功
+2025-08-31 21:17:51,683 - TextChunker - INFO - LlamaIndex分块器初始化成功
+2025-08-31 21:17:51,684 - TextChunker - INFO - LangChain分块器初始化成功
+2025-08-31 21:17:51,685 - TextEmbedder - INFO - 使用SiliconFlow API向量化器
+2025-08-31 21:17:51,765 - ChromaVectorStore - INFO - Chroma客户端初始化成功
+2025-08-31 21:17:51,767 - ChromaVectorStore - INFO - 获取现有集合: document_chunks
+2025-08-31 21:17:51,767 - ChromaVectorStore - INFO - Chroma向量存储初始化完成，路径: ./chroma_db
+2025-08-31 21:17:51,781 - DuckDBManager - INFO - DuckDB数据库初始化成功: data\duckdb\tables.db
+2025-08-31 21:17:51,783 - DuckDBManager - INFO - 系统表创建成功
+2025-08-31 21:17:51,784 - SQLGenerator - INFO - 使用规则引擎进行SQL生成
+2025-08-31 21:17:51,784 - DocumentPipeline - INFO - 文档处理主流水线初始化完成
+2025-08-31 21:17:51,785 - DocumentPipeline - INFO - 开始处理文档: data\tables\order_details.csv
+2025-08-31 21:17:51,786 - DocumentPipeline - INFO - 开始加载表格: data\tables\order_details.csv
+2025-08-31 21:17:51,787 - TableProcessor - INFO - 开始加载表格文件: data\tables\order_details.csv
+2025-08-31 21:17:51,788 - TableProcessor - INFO - 加载CSV文件: data\tables\order_details.csv
+2025-08-31 21:17:51,792 - TableProcessor - INFO - CSV文件加载成功，使用编码: utf-8
+2025-08-31 21:17:51,793 - TableProcessor - INFO - 开始后处理DataFrame，原始形状: (1500, 6)
+2025-08-31 21:17:51,799 - TableProcessor - INFO - DataFrame后处理完成，最终形状: (1500, 6)
+2025-08-31 21:17:51,800 - DocumentPipeline - INFO - 导入表格数据到DuckDB
+2025-08-31 21:17:51,811 - DuckDBManager - WARNING - 表 order_details 已存在，将删除重建
+2025-08-31 21:17:51,819 - DuckDBManager - INFO - 表 order_details 删除成功
+2025-08-31 21:17:51,829 - DuckDBManager - INFO - 表格数据导入成功: order_details (1500 行, 6 列)
+2025-08-31 21:17:51,829 - DocumentPipeline - INFO - 表格已导入DuckDB，表名: order_details
+2025-08-31 21:17:51,830 - DocumentPipeline - INFO - 将表格转换为文本描述
+2025-08-31 21:17:51,833 - TextChunker - INFO - 开始文本分块，方法: basic，文本长度: 372
+2025-08-31 21:17:51,833 - TextChunker - INFO - 基础分块完成，生成 2 个块
+2025-08-31 21:17:51,834 - DocumentPipeline - INFO - 开始批量向量化 2 个文本块
+2025-08-31 21:17:51,834 - TextEmbedder - INFO - 开始向量化 2 个文本
+2025-08-31 21:17:51,835 - TextEmbedder - INFO - 向量化完成，缓存命中: 2, 新生成: 0
+2025-08-31 21:17:51,836 - DocumentPipeline - INFO - 存储 2 个文档到向量数据库
+2025-08-31 21:17:51,836 - ChromaVectorStore - INFO - 开始添加 2 个文档
+2025-08-31 21:17:53,015 - ChromaVectorStore - INFO - 处理批次 1/1: 2 个文档
+2025-08-31 21:17:53,101 - ChromaVectorStore - INFO - 成功添加 2 个文档
+2025-08-31 21:17:53,101 - DocumentPipeline - INFO - 表格处理完成，耗时: 1.32秒
+2025-08-31 21:17:53,121 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,137 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,159 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,176 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,196 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,208 - DuckDBManager - WARNING - 记录查询历史失败: Constraint Error: NOT NULL constraint failed: query_history.id
+2025-08-31 21:17:53,213 - SQLGenerator - ERROR - SQL优化失败: 'NoneType' object has no attribute 'complete'
+2025-08-31 21:17:53,214 - SQLGenerator - ERROR - SQL解释失败: 'NoneType' object has no attribute 'complete'
+2025-08-31 21:17:53,234 - SQLGenerator - INFO - 使用规则引擎进行SQL生成

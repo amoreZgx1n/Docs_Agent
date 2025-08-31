@@ -17,6 +17,8 @@ from src.document_processor.table_processor import TableProcessor
 from src.text_processor.text_chunker import TextChunker
 from src.text_processor.text_embedder import TextEmbedder
 from src.storage.vector_store import ChromaVectorStore
+from src.storage.duckdb_manager import DuckDBManager
+from src.llm_generate.sql_generator import SQLGenerator
 
 
 @dataclass
@@ -48,6 +50,8 @@ class DocumentPipeline(LoggerMixin):
         self.text_chunker = TextChunker()
         self.text_embedder = TextEmbedder()
         self.vector_store = ChromaVectorStore()
+        self.duckdb_manager = DuckDBManager()
+        self.sql_generator = SQLGenerator()
         self.file_utils = get_file_utils()
         
         self.logger.info("文档处理主流水线初始化完成")
@@ -189,17 +193,24 @@ class DocumentPipeline(LoggerMixin):
             if df.empty:
                 raise ValueError("表格数据为空")
             
-            # 2. 将DataFrame转换为文本描述
+            # 2. 导入到DuckDB数据库
+            self.logger.info("导入表格数据到DuckDB")
+            table_name = self.duckdb_manager.import_table(df, str(file_path))
+            self.logger.info(f"表格已导入DuckDB，表名: {table_name}")
+            
+            # 3. 将DataFrame转换为文本描述
             self.logger.info("将表格转换为文本描述")
             table_info = {
                 'rows': len(df),
                 'columns': len(df.columns),
                 'columns_list': df.columns.tolist(),
-                'dtypes_summary': str(df.dtypes.to_dict())
+                'dtypes_summary': str(df.dtypes.to_dict()),
+                'duckdb_table': table_name
             }
             
             # 创建表格的文本描述
             table_text = f"""表格文件: {file_path.name}
+DuckDB表名: {table_name}
 行数: {table_info['rows']}
 列数: {table_info['columns']}
 列名: {', '.join(table_info['columns_list'][:5])}{'...' if len(table_info['columns_list']) > 5 else ''}
@@ -207,13 +218,13 @@ class DocumentPipeline(LoggerMixin):
 数据预览（前3行）:
 {df.head(3).to_string(max_cols=5, max_colwidth=20)}"""
             
-            # 3. 文本分块（表格数据通常不需要复杂分块）
+            # 4. 文本分块（表格数据通常不需要复杂分块）
             chunks = self.text_chunker.chunk_text(
                 table_text,
                 method='basic'
             )
             
-            # 4. 批量向量化和存储
+            # 5. 批量向量化和存储
             self.logger.info(f"开始批量向量化 {len(chunks)} 个文本块")
             
             # 准备批量向量化的文本
@@ -231,7 +242,8 @@ class DocumentPipeline(LoggerMixin):
                     'processing_stage': 'table_to_text',
                     'table_rows': table_info['rows'],
                     'table_columns': table_info['columns'],
-                    'table_columns_list': ', '.join(table_info['columns_list'])
+                    'table_columns_list': ', '.join(table_info['columns_list']),
+                    'duckdb_table': table_name
                 })
                 
                 texts_for_embedding.append(chunk)
@@ -249,7 +261,7 @@ class DocumentPipeline(LoggerMixin):
                     'metadata': metadata
                 })
             
-            # 5. 存储到向量数据库
+            # 6. 存储到向量数据库
             self.logger.info(f"存储 {len(documents)} 个文档到向量数据库")
             doc_ids = self.vector_store.add_documents(documents)
             
@@ -262,7 +274,7 @@ class DocumentPipeline(LoggerMixin):
                 success=True,
                 chunks_count=len(chunks),
                 processing_time=processing_time,
-                metadata=base_metadata
+                metadata={**base_metadata, 'duckdb_table': table_name}
             )
             
         except Exception as e:
@@ -333,9 +345,114 @@ class DocumentPipeline(LoggerMixin):
     
     def get_statistics(self) -> Dict[str, Any]:
         """获取处理统计信息"""
-        return self.vector_store.get_statistics()
+        vector_stats = self.vector_store.get_statistics()
+        duckdb_stats = self.duckdb_manager.list_tables()
+        
+        return {
+            'vector_database': vector_stats,
+            'duckdb_tables': duckdb_stats,
+            'total_tables': len(duckdb_stats)
+        }
     
     def clear_database(self):
-        """清空向量数据库"""
+        """清空数据库"""
         self.vector_store.reset_database()
-        self.logger.info("向量数据库已清空") 
+        # 注意：这里不删除DuckDB表，因为可能还有其他用途
+        self.logger.info("向量数据库已清空")
+    
+    def execute_sql_query(self, query: str, table_name: Optional[str] = None) -> Dict[str, Any]:
+        """执行SQL查询"""
+        return self.duckdb_manager.execute_query(query, table_name)
+    
+    def get_table_schema(self, table_name: str) -> Dict[str, Any]:
+        """获取表结构"""
+        return self.duckdb_manager.get_table_schema(table_name)
+    
+    def list_duckdb_tables(self) -> List[Dict[str, Any]]:
+        """列出所有DuckDB表"""
+        return self.duckdb_manager.list_tables()
+    
+    def get_duckdb_table_info(self, table_name: str) -> Dict[str, Any]:
+        """获取DuckDB表信息"""
+        return self.duckdb_manager.get_table_info(table_name)
+    
+    def export_mysql_schema(self, table_name: str) -> str:
+        """导出MySQL建表语句"""
+        return self.duckdb_manager.export_to_mysql_schema(table_name)
+    
+    def generate_sql_from_query(self, user_query: str, table_name: str) -> Dict[str, Any]:
+        """根据用户查询生成SQL语句"""
+        try:
+            # 获取表信息
+            table_info = self.duckdb_manager.get_table_info(table_name)
+            if not table_info:
+                return {
+                    'success': False,
+                    'error': f'表 {table_name} 不存在'
+                }
+            
+            # 获取表结构
+            schema = self.duckdb_manager.get_table_schema(table_name)
+            if not schema:
+                return {
+                    'success': False,
+                    'error': f'无法获取表 {table_name} 的结构'
+                }
+            
+            # 生成SQL
+            result = self.sql_generator.generate_sql(
+                user_query=user_query,
+                table_info=schema,
+                table_name=table_name,
+                sample_data=table_info.get('sample_data', [])
+            )
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"SQL生成失败: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def execute_generated_sql(self, user_query: str, table_name: str) -> Dict[str, Any]:
+        """生成并执行SQL查询"""
+        try:
+            # 生成SQL
+            sql_result = self.generate_sql_from_query(user_query, table_name)
+            if not sql_result['success']:
+                return sql_result
+            
+            sql = sql_result['sql']
+            
+            # 验证SQL
+            schema = self.duckdb_manager.get_table_schema(table_name)
+            validation = self.sql_generator.validate_sql(sql, schema)
+            if not validation['valid']:
+                return {
+                    'success': False,
+                    'error': f'SQL验证失败: {validation["error"]}',
+                    'generated_sql': sql
+                }
+            
+            # 执行SQL
+            execution_result = self.duckdb_manager.execute_query(sql, table_name)
+            
+            # 合并结果
+            return {
+                'success': True,
+                'user_query': user_query,
+                'generated_sql': sql,
+                'sql_explanation': sql_result.get('explanation', ''),
+                'execution_result': execution_result,
+                'table_name': table_name
+            }
+            
+        except Exception as e:
+            self.logger.error(f"SQL生成和执行失败: {e}")
+            return {
+                'success': False,
+                'error': str(e),
+                'user_query': user_query
+            } 
