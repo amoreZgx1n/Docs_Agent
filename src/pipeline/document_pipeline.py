@@ -127,9 +127,12 @@ class DocumentPipeline(LoggerMixin):
                 method='basic'
             )
             
-            # 3. 向量化和存储
-            self.logger.info(f"开始向量化 {len(chunks)} 个文本块")
-            documents = []
+            # 3. 批量向量化和存储
+            self.logger.info(f"开始批量向量化 {len(chunks)} 个文本块")
+            
+            # 准备批量向量化的文本
+            texts_for_embedding = []
+            chunk_metadatas = []
             
             for i, chunk in enumerate(chunks):
                 # 为每个块添加元数据
@@ -142,13 +145,19 @@ class DocumentPipeline(LoggerMixin):
                     'processing_stage': 'pdf_to_markdown'
                 })
                 
-                # 向量化
-                embedding = self.text_embedder.embed_text(chunk)
-                
+                texts_for_embedding.append(chunk)
+                chunk_metadatas.append(chunk_metadata)
+            
+            # 批量向量化
+            embeddings = self.text_embedder.embed_texts(texts_for_embedding)
+            
+            # 组装文档
+            documents = []
+            for chunk, embedding, metadata in zip(chunks, embeddings, chunk_metadatas):
                 documents.append({
                     'text': chunk,
                     'embedding': embedding,
-                    'metadata': chunk_metadata
+                    'metadata': metadata
                 })
             
             # 4. 存储到向量数据库
@@ -204,9 +213,12 @@ class DocumentPipeline(LoggerMixin):
                 method='basic'
             )
             
-            # 4. 向量化和存储
-            self.logger.info(f"开始向量化 {len(chunks)} 个文本块")
-            documents = []
+            # 4. 批量向量化和存储
+            self.logger.info(f"开始批量向量化 {len(chunks)} 个文本块")
+            
+            # 准备批量向量化的文本
+            texts_for_embedding = []
+            chunk_metadatas = []
             
             for i, chunk in enumerate(chunks):
                 # 为每个块添加元数据
@@ -222,13 +234,19 @@ class DocumentPipeline(LoggerMixin):
                     'table_columns_list': ', '.join(table_info['columns_list'])
                 })
                 
-                # 向量化
-                embedding = self.text_embedder.embed_text(chunk)
-                
+                texts_for_embedding.append(chunk)
+                chunk_metadatas.append(chunk_metadata)
+            
+            # 批量向量化
+            embeddings = self.text_embedder.embed_texts(texts_for_embedding)
+            
+            # 组装文档
+            documents = []
+            for chunk, embedding, metadata in zip(chunks, embeddings, chunk_metadatas):
                 documents.append({
                     'text': chunk,
                     'embedding': embedding,
-                    'metadata': chunk_metadata
+                    'metadata': metadata
                 })
             
             # 5. 存储到向量数据库

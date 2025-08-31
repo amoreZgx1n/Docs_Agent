@@ -41,7 +41,7 @@ text_processing:
       max_tokens: 512
       timeout: 30
       retries: 3
-      batch_size: 10
+      batch_size: 32  # API最大允许批量大小为32
     cache:
       enabled: true
       path: "./data/embedding_cache"
